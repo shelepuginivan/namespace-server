@@ -5,14 +5,15 @@ import FileSystemItem from './FileSystemItem'
 import {IFileSystemItem} from './utils/interfaces/IFileSystemItem'
 
 class FileSystemService implements IFileSystemService {
+	private readonly root: string = process.env.DISKSPACE_DIRECTORY as string
 	private currentWorkingDirectory: string
 
 	constructor() {
-		this.currentWorkingDirectory = path.join(process.env.DISKSPACE_DIRECTORY as string)
+		this.currentWorkingDirectory = this.root
 	}
 
 	set workingDirectory(dir: string) {
-		this.currentWorkingDirectory = path.join((process.env.DISKSPACE_DIRECTORY as string), dir)
+		this.currentWorkingDirectory = path.join(this.root, dir)
 	}
 
 	get workingDirectory(): string {
@@ -24,7 +25,7 @@ class FileSystemService implements IFileSystemService {
 		return workingDirectoryItems.map(item => {
 			const itemProps: IFileSystemItem = {
 				name: item,
-				path: path.join(this.workingDirectory, item),
+				path: path.join(this.workingDirectory.replace(this.root, ''), item),
 				extension: path.extname(item),
 				isDirectory: path.extname(item) === ''
 			}
