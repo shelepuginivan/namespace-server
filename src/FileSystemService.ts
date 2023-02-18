@@ -1,8 +1,8 @@
 import {IFileSystemService} from './utils/interfaces/IFileSystemService'
 import * as path from 'path'
 import * as fs from 'fs/promises'
-import FileSystemItem from "./FileSystemItem";
-import {IFileSystemItem} from "./utils/interfaces/IFileSystemItem";
+import FileSystemItem from './FileSystemItem'
+import {IFileSystemItem} from './utils/interfaces/IFileSystemItem'
 
 class FileSystemService implements IFileSystemService {
 	private currentWorkingDirectory: string
