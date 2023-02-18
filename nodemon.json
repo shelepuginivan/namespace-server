@@ -1,0 +1,6 @@
+{
+	"ignore": [],
+	"watch": ["."],
+	"exec": "npm run build && npm start",
+	"ext": "ts"
+}
