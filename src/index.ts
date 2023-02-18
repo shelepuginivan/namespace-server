@@ -7,6 +7,7 @@ import FileSystemService from './services/FileSystemService'
 import * as path from 'path'
 import FileSystemItem from './FileSystemItem'
 import fileRouter from './routers/fileRouter'
+import 'colors'
 
 dotenv.config({path: path.join(__dirname, '..', '.env')})
 
@@ -26,7 +27,7 @@ app.use(cors({
 app.use('/files', fileRouter)
 
 io.on('connection', (socket) => {
-	console.log(`Client ${socket.id} connected`)
+	console.log('[CONNECTION]'.green.bold, `${socket.id} - ESTABLISHED`)
 
 	socket.on('changeDir', async newDir => {
 		fileSystemService.workingDirectory = newDir.trim()
@@ -34,12 +35,16 @@ io.on('connection', (socket) => {
 
 		socket.emit('updateDirItems', JSON.stringify(workingDirItems))
 	})
+
+	socket.on('disconnect', reason => {
+		console.log('[DISCONNECTED]'.red.bold, `${socket.id} - ${reason.toUpperCase()}`)
+	})
 })
 
 try {
 	const PORT = process.env.PORT || 5124
 	httpServer.listen(PORT)
-	console.log(`Server started on port ${PORT}...`)
+	console.log('[START]'.blue.bold, `Server started on port ${PORT}...`)
 	console.log(`\nPaste this URL in the input on client: http://127.0.0.1:${PORT}\n`)
 } catch (e) {
 	console.error(e)
