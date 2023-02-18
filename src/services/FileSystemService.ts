@@ -1,7 +1,7 @@
-import {IFileSystemService} from './utils/interfaces/IFileSystemService'
+import {IFileSystemService} from '../utils/interfaces/IFileSystemService'
 import * as path from 'path'
 import * as fs from 'fs/promises'
-import FileSystemItem from './FileSystemItem'
+import FileSystemItem from '../FileSystemItem'
 
 class FileSystemService implements IFileSystemService {
 	private readonly root: string = process.env.DISKSPACE_DIRECTORY as string
