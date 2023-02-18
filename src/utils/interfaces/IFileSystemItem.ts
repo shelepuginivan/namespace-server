@@ -1,6 +1,8 @@
 export interface IFileSystemItem {
 	name: string
 	extension: string | null
-	isDirectory: boolean
 	path: string
+	mimetype: string
+	size: number
+	isDirectory: boolean
 }
