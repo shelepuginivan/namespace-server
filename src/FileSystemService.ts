@@ -25,7 +25,7 @@ class FileSystemService implements IFileSystemService {
 		return workingDirectoryItems.map(item => {
 			const itemProps: IFileSystemItem = {
 				name: item,
-				path: path.join(this.workingDirectory.replace(this.root, ''), item),
+				path: (item === '/' ? '' : '/') + path.join(this.workingDirectory.replace(this.root, ''), item).replace(/\\/g, '/'),
 				extension: path.extname(item),
 				isDirectory: path.extname(item) === ''
 			}
