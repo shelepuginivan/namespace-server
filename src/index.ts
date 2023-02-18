@@ -6,6 +6,7 @@ import cors from 'cors'
 import FileSystemService from './FileSystemService'
 import * as path from 'path'
 import FileSystemItem from './FileSystemItem'
+import fileRouter from './routers/fileRouter'
 
 dotenv.config({path: path.join(__dirname, '..', '.env')})
 
@@ -22,6 +23,7 @@ const fileSystemService: FileSystemService = new FileSystemService()
 app.use(cors({
 	origin: '*'
 }))
+app.use('/files', fileRouter)
 
 io.on('connection', (socket) => {
 	console.log(`Client ${socket.id} connected`)
