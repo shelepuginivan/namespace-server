@@ -1,3 +1,3 @@
 export interface IFileService {
-	downloadFile(path: string): string
+	getAbsolutePathToFile(path: string): string
 }
