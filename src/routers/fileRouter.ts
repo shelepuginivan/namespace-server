@@ -3,6 +3,7 @@ import FileController from '../controllers/FileController'
 
 const fileRouter: Router = Router()
 
-fileRouter.get('/:path', FileController.downloadFile)
+fileRouter.get('/preview', FileController.previewFile)
+fileRouter.get('/', FileController.downloadFile)
 
 export default fileRouter
