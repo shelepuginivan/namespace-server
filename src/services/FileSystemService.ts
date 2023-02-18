@@ -22,8 +22,8 @@ class FileSystemService implements IFileSystemService {
 	async getFilesInWorkingDirectory(): Promise<FileSystemItem[]> {
 		const workingDirectoryItems = await fs.readdir(this.workingDirectory)
 		return workingDirectoryItems.map(item => {
-			const absolutePath = path.join(this.workingDirectory, item).replace(/\\/g, '/')
-			return new FileSystemItem(absolutePath, this.workingDirectory)
+			const absolutePath = path.join(this.workingDirectory, item)
+			return new FileSystemItem(absolutePath)
 		})
 	}
 }
