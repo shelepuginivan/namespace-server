@@ -21,7 +21,7 @@ class FileSystemItem implements IFileSystemItem {
 		this.isDirectory = fileStats.isDirectory()
 		this.name = path.basename(absolutePath)
 		this.path = absolutePath.replace(this.root, '').replace(/\\/g, '/')
-		this.mimetype = mime.lookup(this.name) || 'folder'
+		this.mimetype = mime.lookup(this.name) || ''
 		this.size = fileStats.size
 	}
 }
