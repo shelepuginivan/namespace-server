@@ -20,8 +20,7 @@ class FileController implements IFileController {
 
 	async uploadFiles(req: Request, res: Response) {
 		await FileService.uploadFiles(req.files as fileUpload.FileArray)
-
-		res.status(200)
+		res.status(200).end()
 	}
 }
 
