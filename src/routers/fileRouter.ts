@@ -5,5 +5,6 @@ const fileRouter: Router = Router()
 
 fileRouter.get('/preview', FileController.previewFile)
 fileRouter.get('/', FileController.downloadFile)
+fileRouter.post('/', FileController.uploadFiles)
 
 export default fileRouter
