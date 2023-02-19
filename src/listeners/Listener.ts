@@ -19,9 +19,19 @@ class Listener implements IListener {
 	async deleteItem(io: Server, itemPath: string): Promise<void> {
 		await FileService.deleteItem(itemPath)
 		const absoluteItemPath = FileService.getAbsolutePathToItem(itemPath)
-		const updatedWorkingDirItems: FileSystemItem[] = await FileSystemService.getFilesInDirectory(path.dirname(absoluteItemPath))
+		const itemDirectory = path.dirname(absoluteItemPath)
 
-		io.sockets.emit('updateDirItems', JSON.stringify(updatedWorkingDirItems))
+		const updatedWorkingDirItems: FileSystemItem[] = await FileSystemService.getFilesInDirectory(itemDirectory)
+
+		new Array(io).forEach(socket => {
+			socket.emit('getCurrentDirectory')
+
+			socket.on('returnCurrentDirectory', directory => {
+				if (directory === itemDirectory) {
+					socket.emit('updateDirItems', JSON.stringify(updatedWorkingDirItems))
+				}
+			})
+		})
 	}
 }
 
