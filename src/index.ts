@@ -4,7 +4,6 @@ import {Server} from 'socket.io'
 import dotenv from 'dotenv'
 import cors from 'cors'
 import fileUpload from 'express-fileupload'
-import FileSystemService from './services/FileSystemService'
 import * as path from 'path'
 import fileRouter from './routers/fileRouter'
 import Listener from './listeners/Listener'
@@ -20,8 +19,7 @@ const io = new Server(httpServer, {
 	}
 })
 
-const fileSystemService: FileSystemService = new FileSystemService()
-const listener: Listener = new Listener(fileSystemService)
+const listener: Listener = new Listener()
 
 app.use(cors({
 	origin: '*'
