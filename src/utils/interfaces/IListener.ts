@@ -1,7 +1,8 @@
 import {DisconnectReason, Socket} from 'socket.io'
 
 export interface IListener {
-	disconnect(socket: Socket, reason: DisconnectReason): void
+	connect(socket: Socket): void
 	changeDir(socket: Socket, newDirectory: string): Promise<void>
 	deleteItem(socket: Socket, itemPath: string): Promise<void>
+	disconnect(socket: Socket, reason: DisconnectReason): void
 }
