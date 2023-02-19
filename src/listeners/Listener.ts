@@ -1,9 +1,8 @@
 import {IListener} from '../utils/interfaces/IListener'
-import {DisconnectReason, Server, Socket} from 'socket.io'
+import {DisconnectReason, Socket} from 'socket.io'
 import FileSystemItem from '../FileSystemItem'
 import FileSystemService from '../services/FileSystemService'
 import FileService from '../services/FileService'
-import * as path from 'path'
 
 class Listener implements IListener {
 	disconnect(socket: Socket, reason: DisconnectReason): void {
@@ -16,22 +15,24 @@ class Listener implements IListener {
 		socket.emit('updateDirItems', JSON.stringify(workingDirItems))
 	}
 
-	async deleteItem(io: Server, itemPath: string): Promise<void> {
+	async deleteItem(socket: Socket, itemPath: string): Promise<void> {
 		await FileService.deleteItem(itemPath)
-		const absoluteItemPath = FileService.getAbsolutePathToItem(itemPath)
-		const itemDirectory = path.dirname(absoluteItemPath)
+		const relativeItemDirectory = FileService.getItemDirectory(itemPath)
+		const absoluteItemPath = FileService.getAbsolutePathToItem(relativeItemDirectory)
 
-		const updatedWorkingDirItems: FileSystemItem[] = await FileSystemService.getFilesInDirectory(itemDirectory)
+		const updatedDirectoryItems = await FileSystemService.getFilesInDirectory(absoluteItemPath)
 
-		new Array(io).forEach(socket => {
-			socket.emit('getCurrentDirectory')
+		socket.emit('updateDirItems', JSON.stringify(updatedDirectoryItems))
+		socket.broadcast.emit('contentChanged', relativeItemDirectory)
+	}
 
-			socket.on('returnCurrentDirectory', directory => {
-				if (directory === itemDirectory) {
-					socket.emit('updateDirItems', JSON.stringify(updatedWorkingDirItems))
-				}
-			})
-		})
+	async updateItems(socket: Socket, directory: string) {
+		const absoluteItemPath = FileService.getAbsolutePathToItem(directory)
+
+		const updatedDirectoryItems = await FileSystemService.getFilesInDirectory(absoluteItemPath)
+
+		socket.emit('updateDirItems', JSON.stringify(updatedDirectoryItems))
+		socket.broadcast.emit('contentChanged', directory)
 	}
 }
 
