@@ -18,7 +18,10 @@ class FileService implements IFileService {
 		if (!path.isAbsolute(itemPath)) {
 			itemPath = this.getAbsolutePathToItem(itemPath)
 		}
-		await fs.rm(itemPath)
+
+		const itemData = await fs.stat(itemPath)
+
+		await (itemData.isFile() ? fs.rm(itemPath) : fs.rmdir(itemPath))
 	}
 
 	async uploadFiles(files: fileUpload.FileArray): Promise<void> {
