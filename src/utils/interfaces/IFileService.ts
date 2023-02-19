@@ -1,3 +1,3 @@
 export interface IFileService {
-	getAbsolutePathToFile(path: string): string
+	getAbsolutePathToItem(itemPath: string): string
 }

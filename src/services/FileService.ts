@@ -4,20 +4,20 @@ import * as fs from 'fs/promises'
 import fileUpload from 'express-fileupload'
 
 class FileService implements IFileService {
-	getAbsolutePathToFile(pathToFile: string): string {
-		return path.join(process.env.DISKSPACE_DIRECTORY as string, pathToFile)
+	getAbsolutePathToItem(itemPath: string): string {
+		return path.join(process.env.DISKSPACE_DIRECTORY as string, itemPath)
 	}
 
 	async deleteItem(itemPath: string): Promise<void> {
 		if (!path.isAbsolute(itemPath)) {
-			itemPath = this.getAbsolutePathToFile(itemPath)
+			itemPath = this.getAbsolutePathToItem(itemPath)
 		}
 		await fs.rm(itemPath)
 	}
 
 	async uploadFiles(files: fileUpload.FileArray) {
 		Object.keys(files).forEach(pathToFile => {
-			(files[pathToFile] as fileUpload.UploadedFile).mv(this.getAbsolutePathToFile(pathToFile))
+			(files[pathToFile] as fileUpload.UploadedFile).mv(this.getAbsolutePathToItem(pathToFile))
 		})
 	}
 }
