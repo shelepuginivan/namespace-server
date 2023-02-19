@@ -1,3 +1,5 @@
+import FileSystemItem from '../../FileSystemItem'
+
 export interface IFileSystemService {
-	workingDirectory: string
+	getFilesInDirectory(directory: string): Promise<FileSystemItem[]>
 }
