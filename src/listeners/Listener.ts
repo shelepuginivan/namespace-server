@@ -5,6 +5,19 @@ import FileSystemService from '../services/FileSystemService'
 import FileService from '../services/FileService'
 
 class Listener implements IListener {
+	connect(socket: Socket): void {
+		const password = socket.handshake.auth?.password
+		const presetPassword = process.env.DISKSPACE_PASSWORD
+
+		if (presetPassword && password !== presetPassword) {
+			console.log('[CONNECTION ERROR]'.red.bold, `${socket.id} - WRONG PASSWORD`)
+			socket.disconnect(true)
+			return
+		}
+
+		console.log('[CONNECTION]'.green.bold, `${socket.id} - ESTABLISHED`)
+	}
+
 	disconnect(socket: Socket, reason: DisconnectReason): void {
 		console.log('[DISCONNECTED]'.red.bold, `${socket.id} - ${reason.toUpperCase()}`)
 	}
