@@ -31,7 +31,8 @@ io.on('connection', (socket) => {
 	console.log('[CONNECTION]'.green.bold, `${socket.id} - ESTABLISHED`)
 
 	socket.on('changeDir', async newDirectory => listener.changeDir(socket, newDirectory))
-	socket.on('deleteItem', async itemPath => listener.deleteItem(io, itemPath))
+	socket.on('deleteItem', async itemPath => listener.deleteItem(socket, itemPath))
+	socket.on('updateItems', async directory => listener.updateItems(socket, directory))
 	socket.on('disconnect', reason => listener.disconnect(socket, reason))
 })
 
