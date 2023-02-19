@@ -3,10 +3,11 @@ import {createServer} from 'http'
 import {Server} from 'socket.io'
 import dotenv from 'dotenv'
 import cors from 'cors'
+import fileUpload from 'express-fileupload'
 import FileSystemService from './services/FileSystemService'
 import * as path from 'path'
-import FileSystemItem from './FileSystemItem'
 import fileRouter from './routers/fileRouter'
+import Listener from './listeners/Listener'
 import 'colors'
 
 dotenv.config({path: path.join(__dirname, '..', '.env')})
@@ -20,25 +21,20 @@ const io = new Server(httpServer, {
 })
 
 const fileSystemService: FileSystemService = new FileSystemService()
+const listener: Listener = new Listener(fileSystemService)
 
 app.use(cors({
 	origin: '*'
 }))
+app.use(fileUpload())
 app.use('/files', fileRouter)
 
 io.on('connection', (socket) => {
 	console.log('[CONNECTION]'.green.bold, `${socket.id} - ESTABLISHED`)
 
-	socket.on('changeDir', async newDir => {
-		fileSystemService.workingDirectory = newDir.trim()
-		const workingDirItems: FileSystemItem[] = await fileSystemService.getFilesInWorkingDirectory()
-
-		socket.emit('updateDirItems', JSON.stringify(workingDirItems))
-	})
-
-	socket.on('disconnect', reason => {
-		console.log('[DISCONNECTED]'.red.bold, `${socket.id} - ${reason.toUpperCase()}`)
-	})
+	socket.on('changeDir', async newDirectory => listener.changeDir(socket, newDirectory))
+	socket.on('deleteItem', async itemPath => listener.deleteItem(io, itemPath))
+	socket.on('disconnect', reason => listener.disconnect(socket, reason))
 })
 
 try {
