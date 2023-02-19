@@ -10,7 +10,7 @@ class Listener implements IListener {
 		const presetPassword = process.env.DISKSPACE_PASSWORD
 
 		if (presetPassword && password !== presetPassword) {
-			console.log('[CONNECTION ERROR]'.red.bold, `${socket.id} - WRONG PASSWORD`)
+			console.error('[CONNECTION ERROR]'.red.bold, `${socket.id} - WRONG PASSWORD`)
 			socket.disconnect(true)
 			return
 		}
@@ -19,7 +19,7 @@ class Listener implements IListener {
 	}
 
 	disconnect(socket: Socket, reason: DisconnectReason): void {
-		console.log('[DISCONNECTED]'.red.bold, `${socket.id} - ${reason.toUpperCase()}`)
+		console.error('[DISCONNECTED]'.red.bold, `${socket.id} - ${reason.toUpperCase()}`)
 	}
 
 	async changeDir(socket: Socket, newDirectory: string): Promise<void> {
@@ -48,6 +48,10 @@ class Listener implements IListener {
 
 		socket.emit('updateDirItems', JSON.stringify(updatedDirectoryItems))
 		socket.to(directory).emit('updateDirItems', JSON.stringify(updatedDirectoryItems))
+	}
+
+	error(socket: Socket, error: Error): void {
+		console.error('[ERROR]'.red.bold, `${socket.id} - ${error.message}`)
 	}
 }
 
