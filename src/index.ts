@@ -19,8 +19,6 @@ const io = new Server(httpServer, {
 	cors: {origin}
 })
 
-const listener: Listener = new Listener()
-
 app.use('/files', cors({origin}))
 app.use(fileUpload())
 app.use('/files', fileRouter)
@@ -28,10 +26,10 @@ app.use('/files', fileRouter)
 io.on('connection', (socket) => {
 	console.log('[CONNECTION]'.green.bold, `${socket.id} - ESTABLISHED`)
 
-	socket.on('changeDir', async newDirectory => listener.changeDir(socket, newDirectory))
-	socket.on('deleteItem', async itemPath => listener.deleteItem(socket, itemPath))
-	socket.on('updateItems', async directory => listener.updateItems(socket, directory))
-	socket.on('disconnect', reason => listener.disconnect(socket, reason))
+	socket.on('changeDir', async newDirectory => Listener.changeDir(socket, newDirectory))
+	socket.on('deleteItem', async itemPath => Listener.deleteItem(socket, itemPath))
+	socket.on('updateItems', async directory => Listener.updateItems(socket, directory))
+	socket.on('disconnect', reason => Listener.disconnect(socket, reason))
 })
 
 try {
