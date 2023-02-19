@@ -10,6 +10,8 @@ class Listener implements IListener {
 	}
 
 	async changeDir(socket: Socket, newDirectory: string): Promise<void> {
+		socket.rooms.forEach(room => socket.leave(room))
+		socket.join(newDirectory)
 		const workingDirItems: FileSystemItem[] = await FileSystemService.getFilesInDirectory(FileService.getAbsolutePathToItem(newDirectory))
 
 		socket.emit('updateDirItems', JSON.stringify(workingDirItems))
@@ -23,7 +25,7 @@ class Listener implements IListener {
 		const updatedDirectoryItems = await FileSystemService.getFilesInDirectory(absoluteItemPath)
 
 		socket.emit('updateDirItems', JSON.stringify(updatedDirectoryItems))
-		socket.broadcast.emit('contentChanged', relativeItemDirectory)
+		socket.to(relativeItemDirectory).emit('updateDirItems', JSON.stringify(updatedDirectoryItems))
 	}
 
 	async updateItems(socket: Socket, directory: string) {
@@ -32,7 +34,7 @@ class Listener implements IListener {
 		const updatedDirectoryItems = await FileSystemService.getFilesInDirectory(absoluteItemPath)
 
 		socket.emit('updateDirItems', JSON.stringify(updatedDirectoryItems))
-		socket.broadcast.emit('contentChanged', directory)
+		socket.to(directory).emit('updateDirItems', JSON.stringify(updatedDirectoryItems))
 	}
 }
 
