@@ -5,4 +5,5 @@ export interface IListener {
 	changeDir(socket: Socket, newDirectory: string): Promise<void>
 	deleteItem(socket: Socket, itemPath: string): Promise<void>
 	disconnect(socket: Socket, reason: DisconnectReason): void
+	error(socket: Socket, error: Error): void
 }
