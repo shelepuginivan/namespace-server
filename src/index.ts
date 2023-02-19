@@ -26,12 +26,12 @@ app.use(fileUpload())
 app.use('/files', fileRouter)
 
 io.on('connection', (socket) => {
-	console.log('[CONNECTION]'.green.bold, `${socket.id} - ESTABLISHED`)
+	Listener.connect(socket)
 
 	socket.on('changeDir', async newDirectory => Listener.changeDir(socket, newDirectory))
 	socket.on('deleteItem', async itemPath => Listener.deleteItem(socket, itemPath))
-	socket.on('updateItems', async directory => Listener.updateItems(socket, directory))
 	socket.on('disconnect', reason => Listener.disconnect(socket, reason))
+	socket.on('updateItems', async directory => Listener.updateItems(socket, directory))
 })
 
 try {
