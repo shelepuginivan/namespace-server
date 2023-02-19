@@ -32,6 +32,7 @@ io.on('connection', (socket) => {
 	socket.on('deleteItem', async itemPath => Listener.deleteItem(socket, itemPath))
 	socket.on('disconnect', reason => Listener.disconnect(socket, reason))
 	socket.on('updateItems', async directory => Listener.updateItems(socket, directory))
+	socket.on('error', error => Listener.error(socket, error))
 })
 
 try {
