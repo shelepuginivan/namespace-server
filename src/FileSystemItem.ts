@@ -1,7 +1,8 @@
-import {IFileSystemItem} from './utils/interfaces/IFileSystemItem'
-import mime from 'mime-types'
 import fs from 'fs'
+import mime from 'mime-types'
 import path from 'path'
+
+import {IFileSystemItem} from './utils/interfaces/IFileSystemItem'
 
 class FileSystemItem implements IFileSystemItem {
 	private readonly root = process.env.DISKSPACE_DIRECTORY as string

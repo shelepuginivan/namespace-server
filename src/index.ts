@@ -1,13 +1,15 @@
-import express from 'express'
-import {createServer} from 'http'
-import {Server} from 'socket.io'
-import dotenv from 'dotenv'
-import cors from 'cors'
-import fileUpload from 'express-fileupload'
-import * as path from 'path'
-import fileRouter from './routers/fileRouter'
-import Listener from './listeners/Listener'
 import 'colors'
+
+import cors from 'cors'
+import dotenv from 'dotenv'
+import express from 'express'
+import fileUpload from 'express-fileupload'
+import {createServer} from 'http'
+import * as path from 'path'
+import {Server} from 'socket.io'
+
+import Listener from './listeners/Listener'
+import fileRouter from './routers/fileRouter'
 
 dotenv.config({path: path.join(__dirname, '..', '.env')})
 
