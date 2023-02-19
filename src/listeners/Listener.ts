@@ -36,4 +36,4 @@ class Listener implements IListener {
 	}
 }
 
-export default Listener
+export default new Listener()
