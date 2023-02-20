@@ -38,9 +38,8 @@ io.on('connection', (socket) => {
 try {
 	const PORT = process.env.PORT || 5124
 	httpServer.listen(PORT)
-	console.log('[CORS]'.blue.bold, `Allowed origins: ${origin.join(', ')}`)
-	console.log('[START]'.blue.bold, `Server started on port ${PORT}...`)
-	console.log(`\nPaste this URL in the input on client: http://127.0.0.1:${PORT}\n`)
+	console.log('[INFO]'.blue.bold, `CORS: Allowed origins: ${origin.join(', ')}`)
+	console.log('\n[START]'.magenta.bold, `Server started on port ${PORT}...\n`)
 } catch (e) {
-	console.error('[STARTUP ERROR]'.red.bold, e)
+	console.error('[STARTUP ERROR]'.red.bold, (e as Error).message)
 }
