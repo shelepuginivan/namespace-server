@@ -31,6 +31,12 @@ class FileService implements IFileService {
 			(files[pathToFile] as fileUpload.UploadedFile).mv(this.getAbsolutePathToItem(Buffer.from(pathToFile, 'latin1').toString('utf-8')))
 		})
 	}
+
+	async renameItem(itemToRename: string, newName: string): Promise<void> {
+		const oldAbsoluteItemPath = this.getAbsolutePathToItem(itemToRename)
+		const newAbsoluteItemPath = this.getAbsolutePathToItem(newName)
+		await fs.rename(oldAbsoluteItemPath, newAbsoluteItemPath)
+	}
 }
 
 export default new FileService()
