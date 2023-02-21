@@ -5,4 +5,5 @@ export interface IFileService {
 	getItemDirectory(itemPath: string): string
 	deleteItem(itemPath: string): Promise<void>
 	uploadFiles(files: fileUpload.FileArray): Promise<void>
+	renameItem(itemToRename: string, newName: string): Promise<void>
 }
