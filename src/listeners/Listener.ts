@@ -41,6 +41,18 @@ class Listener implements IListener {
 		socket.to(relativeItemDirectory).emit('updateDirItems', JSON.stringify(updatedDirectoryItems))
 	}
 
+	async renameItem(socket: Socket, itemToRename: string, newName: string) {
+		await FileService.renameItem(itemToRename, newName)
+
+		const relativeItemDirectory = FileService.getItemDirectory(newName)
+		const absoluteItemPath = FileService.getAbsolutePathToItem(relativeItemDirectory)
+
+		const updatedDirectoryItems = await FileSystemService.getFilesInDirectory(absoluteItemPath)
+
+		socket.emit('updateDirItems', JSON.stringify(updatedDirectoryItems))
+		socket.to(relativeItemDirectory).emit('updateDirItems', JSON.stringify(updatedDirectoryItems))
+	}
+
 	async updateItems(socket: Socket, directory: string) {
 		const absoluteItemPath = FileService.getAbsolutePathToItem(directory)
 

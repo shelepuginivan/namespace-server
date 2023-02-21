@@ -28,9 +28,10 @@ app.use('/files', fileRouter)
 io.on('connection', (socket) => {
 	Listener.connect(socket)
 
-	socket.on('changeDir', async newDirectory => Listener.changeDir(socket, newDirectory))
-	socket.on('deleteItem', async itemPath => Listener.deleteItem(socket, itemPath))
+	socket.on('changeDir', newDirectory => Listener.changeDir(socket, newDirectory))
+	socket.on('deleteItem', itemPath => Listener.deleteItem(socket, itemPath))
 	socket.on('disconnect', reason => Listener.disconnect(socket, reason))
+	socket.on('renameItem', (itemToRename, newName) => Listener.renameItem(socket, itemToRename, newName))
 	socket.on('updateItems', async directory => Listener.updateItems(socket, directory))
 	socket.on('error', error => Listener.error(socket, error))
 })
