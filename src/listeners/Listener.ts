@@ -31,13 +31,12 @@ class Listener implements IListener {
 
 	async deleteItem(socket: Socket, itemPath: string): Promise<void> {
 		await FileService.deleteItem(itemPath)
+
 		const relativeItemDirectory = FileService.getItemDirectory(itemPath)
-		const absoluteItemPath = FileService.getAbsolutePathToItem(relativeItemDirectory)
+		const updatedDirectoryItems = JSON.stringify(await FileService.getItemsInDirectory(relativeItemDirectory))
 
-		const updatedDirectoryItems = await FileService.getItemsInDirectory(absoluteItemPath)
-
-		socket.emit('updateDirItems', JSON.stringify(updatedDirectoryItems))
-		socket.to(relativeItemDirectory).emit('updateDirItems', JSON.stringify(updatedDirectoryItems))
+		socket.emit('updateDirItems', updatedDirectoryItems)
+		socket.to(relativeItemDirectory).emit('updateDirItems', updatedDirectoryItems)
 	}
 
 	async renameItem(socket: Socket, oldPath: string, newPath: string) {
@@ -45,15 +44,13 @@ class Listener implements IListener {
 
 		const oldRelativePath = FileService.getItemDirectory(oldPath)
 		const newRelativePath = FileService.getItemDirectory(newPath)
-		const oldAbsolutePath = FileService.getAbsolutePathToItem(oldRelativePath)
-		const newAbsolutePath = FileService.getAbsolutePathToItem(newRelativePath)
 
-		const itemsInOldDir = await FileService.getItemsInDirectory(oldAbsolutePath)
-		const itemsInNewDir = await FileService.getItemsInDirectory(newAbsolutePath)
+		const itemsInOldDir = JSON.stringify(await FileService.getItemsInDirectory(oldRelativePath))
+		const itemsInNewDir = JSON.stringify(await FileService.getItemsInDirectory(newRelativePath))
 
-		socket.emit('updateDirItems', JSON.stringify(itemsInOldDir))
-		socket.to(oldRelativePath).emit('updateDirItems', JSON.stringify(itemsInOldDir))
-		socket.to(newRelativePath).emit('updateDirItems', JSON.stringify(itemsInNewDir))
+		socket.emit('updateDirItems', itemsInOldDir)
+		socket.to(oldRelativePath).emit('updateDirItems', itemsInOldDir)
+		socket.to(newRelativePath).emit('updateDirItems', itemsInNewDir)
 	}
 
 	async updateItems(socket: Socket, directory: string) {
