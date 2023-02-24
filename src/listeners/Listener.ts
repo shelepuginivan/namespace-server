@@ -40,16 +40,20 @@ class Listener implements IListener {
 		socket.to(relativeItemDirectory).emit('updateDirItems', JSON.stringify(updatedDirectoryItems))
 	}
 
-	async renameItem(socket: Socket, itemToRename: string, newName: string) {
-		await FileService.renameItem(itemToRename, newName)
+	async renameItem(socket: Socket, oldPath: string, newPath: string) {
+		await FileService.renameItem(oldPath, newPath)
 
-		const relativeItemDirectory = FileService.getItemDirectory(newName)
-		const absoluteItemPath = FileService.getAbsolutePathToItem(relativeItemDirectory)
+		const oldRelativePath = FileService.getItemDirectory(oldPath)
+		const newRelativePath = FileService.getItemDirectory(newPath)
+		const oldAbsolutePath = FileService.getAbsolutePathToItem(oldRelativePath)
+		const newAbsolutePath = FileService.getAbsolutePathToItem(newRelativePath)
 
-		const updatedDirectoryItems = await FileService.getItemsInDirectory(absoluteItemPath)
+		const itemsInOldDir = await FileService.getItemsInDirectory(oldAbsolutePath)
+		const itemsInNewDir = await FileService.getItemsInDirectory(newAbsolutePath)
 
-		socket.emit('updateDirItems', JSON.stringify(updatedDirectoryItems))
-		socket.to(relativeItemDirectory).emit('updateDirItems', JSON.stringify(updatedDirectoryItems))
+		socket.emit('updateDirItems', JSON.stringify(itemsInOldDir))
+		socket.to(oldRelativePath).emit('updateDirItems', JSON.stringify(itemsInOldDir))
+		socket.to(newRelativePath).emit('updateDirItems', JSON.stringify(itemsInNewDir))
 	}
 
 	async updateItems(socket: Socket, directory: string) {
