@@ -16,6 +16,10 @@ class FileService implements IFileService {
 	}
 
 	async getItemsInDirectory(directory: string): Promise<FileSystemItem[]> {
+		if (!path.isAbsolute(directory)) {
+			directory = this.getAbsolutePathToItem(directory)
+		}
+
 		const workingDirectoryItems = await fs.readdir(directory)
 		return workingDirectoryItems.map(item => {
 			const absolutePath = path.join(directory, item)
