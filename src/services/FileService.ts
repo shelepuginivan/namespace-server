@@ -2,6 +2,7 @@ import {IFileService} from '../utils/interfaces/IFileService'
 import * as path from 'path'
 import * as fs from 'fs/promises'
 import fileUpload from 'express-fileupload'
+import FileSystemItem from '../FileSystemItem'
 
 class FileService implements IFileService {
 	getAbsolutePathToItem(itemPath: string): string {
@@ -13,6 +14,15 @@ class FileService implements IFileService {
 		itemPathElements.pop()
 		return itemPathElements.join('/') || '/'
 	}
+
+	async getItemsInDirectory(directory: string): Promise<FileSystemItem[]> {
+		const workingDirectoryItems = await fs.readdir(directory)
+		return workingDirectoryItems.map(item => {
+			const absolutePath = path.join(directory, item)
+			return new FileSystemItem(absolutePath)
+		})
+	}
+
 
 	async deleteItem(itemPath: string): Promise<void> {
 		if (!path.isAbsolute(itemPath)) {

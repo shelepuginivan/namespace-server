@@ -1,7 +1,6 @@
 import {IListener} from '../utils/interfaces/IListener'
 import {DisconnectReason, Socket} from 'socket.io'
 import FileSystemItem from '../FileSystemItem'
-import FileSystemService from '../services/FileSystemService'
 import FileService from '../services/FileService'
 
 class Listener implements IListener {
@@ -25,7 +24,7 @@ class Listener implements IListener {
 	async changeDir(socket: Socket, newDirectory: string): Promise<void> {
 		socket.rooms.forEach(room => socket.leave(room))
 		socket.join(newDirectory)
-		const workingDirItems: FileSystemItem[] = await FileSystemService.getFilesInDirectory(FileService.getAbsolutePathToItem(newDirectory))
+		const workingDirItems: FileSystemItem[] = await FileService.getItemsInDirectory(FileService.getAbsolutePathToItem(newDirectory))
 
 		socket.emit('updateDirItems', JSON.stringify(workingDirItems))
 	}
@@ -35,7 +34,7 @@ class Listener implements IListener {
 		const relativeItemDirectory = FileService.getItemDirectory(itemPath)
 		const absoluteItemPath = FileService.getAbsolutePathToItem(relativeItemDirectory)
 
-		const updatedDirectoryItems = await FileSystemService.getFilesInDirectory(absoluteItemPath)
+		const updatedDirectoryItems = await FileService.getItemsInDirectory(absoluteItemPath)
 
 		socket.emit('updateDirItems', JSON.stringify(updatedDirectoryItems))
 		socket.to(relativeItemDirectory).emit('updateDirItems', JSON.stringify(updatedDirectoryItems))
@@ -47,7 +46,7 @@ class Listener implements IListener {
 		const relativeItemDirectory = FileService.getItemDirectory(newName)
 		const absoluteItemPath = FileService.getAbsolutePathToItem(relativeItemDirectory)
 
-		const updatedDirectoryItems = await FileSystemService.getFilesInDirectory(absoluteItemPath)
+		const updatedDirectoryItems = await FileService.getItemsInDirectory(absoluteItemPath)
 
 		socket.emit('updateDirItems', JSON.stringify(updatedDirectoryItems))
 		socket.to(relativeItemDirectory).emit('updateDirItems', JSON.stringify(updatedDirectoryItems))
@@ -56,7 +55,7 @@ class Listener implements IListener {
 	async updateItems(socket: Socket, directory: string) {
 		const absoluteItemPath = FileService.getAbsolutePathToItem(directory)
 
-		const updatedDirectoryItems = await FileSystemService.getFilesInDirectory(absoluteItemPath)
+		const updatedDirectoryItems = await FileService.getItemsInDirectory(absoluteItemPath)
 
 		socket.emit('updateDirItems', JSON.stringify(updatedDirectoryItems))
 		socket.to(directory).emit('updateDirItems', JSON.stringify(updatedDirectoryItems))
