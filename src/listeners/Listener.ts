@@ -40,6 +40,9 @@ class Listener implements IListener {
 	}
 
 	async renameItem(socket: Socket, oldPath: string, newPath: string) {
+		if (oldPath.startsWith('/')) oldPath = oldPath.replace('/', '')
+		if (newPath.startsWith('/')) newPath = newPath.replace('/', '')
+
 		await FileService.renameItem(oldPath, newPath)
 
 		const oldRelativePath = FileService.getItemDirectory(oldPath)
