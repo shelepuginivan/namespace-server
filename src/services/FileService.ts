@@ -60,6 +60,11 @@ class FileService implements IFileService {
 	async renameItem(itemToRename: string, newName: string): Promise<void> {
 		const oldAbsoluteItemPath = this.getAbsolutePathToItem(itemToRename)
 		const newAbsoluteItemPath = this.getAbsolutePathToItem(newName)
+
+		if (!fs.existsSync(oldAbsoluteItemPath)) {
+			throw HttpErrorFabric.createBadRequest('invalid old path: file not found')
+		}
+
 		await fsPromises.rename(oldAbsoluteItemPath, newAbsoluteItemPath)
 	}
 }
