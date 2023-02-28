@@ -39,9 +39,12 @@ class FileService implements IFileService {
 			itemPath = this.getAbsolutePathToItem(itemPath)
 		}
 
-		const itemData = await fs.stat(itemPath)
-
-		await (itemData.isFile() ? fs.rm(itemPath) : fs.rmdir(itemPath))
+		try {
+			const itemData = await fsPromises.stat(itemPath)
+			await (itemData.isFile() ? fsPromises.rm(itemPath) : fsPromises.rmdir(itemPath))
+		} catch (e) {
+			throw HttpErrorFabric.createInternalServerError((e as Error).message)
+		}
 	}
 
 	async uploadFiles(files: fileUpload.FileArray): Promise<void> {
