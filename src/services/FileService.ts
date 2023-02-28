@@ -4,6 +4,7 @@ import * as fs from 'fs'
 import fsPromises from 'fs/promises'
 import fileUpload from 'express-fileupload'
 import FileSystemItem from '../FileSystemItem'
+import HttpErrorFabric from '../exceptions/HttpErrorFabric'
 
 class FileService implements IFileService {
 	getAbsolutePathToItem(itemPath: string): string {
@@ -30,6 +31,10 @@ class FileService implements IFileService {
 
 
 	async deleteItem(itemPath: string): Promise<void> {
+		if (!fs.existsSync(itemPath)) {
+			throw HttpErrorFabric.createBadRequest('file not found')
+		}
+
 		if (!path.isAbsolute(itemPath)) {
 			itemPath = this.getAbsolutePathToItem(itemPath)
 		}
