@@ -48,7 +48,7 @@ class FileService implements IFileService {
 	}
 
 	async uploadFiles(files: fileUpload.FileArray): Promise<void> {
-		if (!files) return
+		if (!files) throw HttpErrorFabric.createBadRequest('no files were uploaded')
 
 		Object.keys(files).forEach(pathToFile => {
 			(files[pathToFile] as fileUpload.UploadedFile).mv(this.getAbsolutePathToItem(Buffer.from(pathToFile, 'latin1').toString('utf-8')))
