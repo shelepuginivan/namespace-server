@@ -8,6 +8,8 @@ import HttpErrorFabric from '../exceptions/HttpErrorFabric'
 
 class FileService implements IFileService {
 	getAbsolutePathToItem(itemPath: string): string {
+		if (path.isAbsolute(itemPath)) return itemPath
+
 		return path.join(process.env.DISKSPACE_DIRECTORY as string, itemPath)
 	}
 
