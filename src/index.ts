@@ -10,6 +10,7 @@ import {Server} from 'socket.io'
 
 import Listener from './listeners/Listener'
 import fileRouter from './routers/fileRouter'
+import {httpErrorMiddleware} from './middlewares/httpErrorMiddleware'
 
 dotenv.config({path: path.join(__dirname, '..', '.env')})
 
@@ -24,6 +25,7 @@ const io = new Server(httpServer, {
 app.use('/files', cors({origin}))
 app.use(fileUpload())
 app.use('/files', fileRouter)
+app.use(httpErrorMiddleware)
 
 io.on('connection', (socket) => {
 	Listener.connect(socket)
