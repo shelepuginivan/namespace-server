@@ -1,6 +1,7 @@
 import {IFileService} from '../utils/interfaces/IFileService'
 import * as path from 'path'
-import * as fs from 'fs/promises'
+import * as fs from 'fs'
+import fsPromises from 'fs/promises'
 import fileUpload from 'express-fileupload'
 import FileSystemItem from '../FileSystemItem'
 
@@ -20,7 +21,7 @@ class FileService implements IFileService {
 			directory = this.getAbsolutePathToItem(directory)
 		}
 
-		const workingDirectoryItems = await fs.readdir(directory)
+		const workingDirectoryItems = await fsPromises.readdir(directory)
 		return workingDirectoryItems.map(item => {
 			const absolutePath = path.join(directory, item)
 			return new FileSystemItem(absolutePath)
@@ -49,7 +50,7 @@ class FileService implements IFileService {
 	async renameItem(itemToRename: string, newName: string): Promise<void> {
 		const oldAbsoluteItemPath = this.getAbsolutePathToItem(itemToRename)
 		const newAbsoluteItemPath = this.getAbsolutePathToItem(newName)
-		await fs.rename(oldAbsoluteItemPath, newAbsoluteItemPath)
+		await fsPromises.rename(oldAbsoluteItemPath, newAbsoluteItemPath)
 	}
 }
 
