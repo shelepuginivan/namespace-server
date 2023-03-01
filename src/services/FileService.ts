@@ -7,7 +7,8 @@ import FileSystemItem from '../FileSystemItem'
 import HttpErrorFabric from '../exceptions/HttpErrorFabric'
 
 class FileService implements IFileService {
-	getAbsolutePathToItem(itemPath: string): string {
+	getAbsolutePathToItem(itemPath?: string): string {
+		if (!itemPath) throw HttpErrorFabric.createBadRequest('parameter `path` required')
 		if (!itemPath.startsWith('/') && path.isAbsolute(itemPath)) return itemPath
 		if (itemPath.startsWith('/')) itemPath = itemPath.replace('/', '')
 
