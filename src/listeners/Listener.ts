@@ -5,16 +5,20 @@ import FileService from '../services/FileService'
 
 class Listener implements IListener {
 	connect(socket: Socket): void {
-		const password = socket.handshake.auth?.password
-		const presetPassword = process.env.DISKSPACE_PASSWORD
+		try {
+			const password = socket.handshake.auth?.password
+			const presetPassword = process.env.DISKSPACE_PASSWORD
 
-		if (presetPassword && password !== presetPassword) {
-			console.error('[CONNECTION ERROR]'.red.bold, `${socket.id} - WRONG PASSWORD`)
-			socket.disconnect(true)
-			return
+			if (presetPassword && password !== presetPassword) {
+				console.error('[CONNECTION ERROR]'.red.bold, `${socket.id} - WRONG PASSWORD`)
+				socket.disconnect(true)
+				return
+			}
+
+			console.log('[CONNECTION]'.green.bold, `${socket.id} - ESTABLISHED`)
+		} catch (e) {
+			console.error('[ERROR]'.red.bold, (e as Error).message)
 		}
-
-		console.log('[CONNECTION]'.green.bold, `${socket.id} - ESTABLISHED`)
 	}
 
 	disconnect(socket: Socket, reason: DisconnectReason): void {
@@ -22,47 +26,63 @@ class Listener implements IListener {
 	}
 
 	async changeDir(socket: Socket, newDirectory: string): Promise<void> {
-		socket.rooms.forEach(room => socket.leave(room))
-		socket.join(newDirectory)
-		const workingDirItems: FileSystemItem[] = await FileService.getItemsInDirectory(FileService.getAbsolutePathToItem(newDirectory))
+		try {
+			socket.rooms.forEach(room => socket.leave(room))
+			socket.join(newDirectory)
+			const workingDirItems: FileSystemItem[] = await FileService.getItemsInDirectory(FileService.getAbsolutePathToItem(newDirectory))
 
-		socket.emit('updateDirItems', JSON.stringify(workingDirItems))
+			socket.emit('updateDirItems', JSON.stringify(workingDirItems))
+		} catch (e) {
+			console.error('[ERROR]'.red.bold, (e as Error).message)
+		}
 	}
 
 	async deleteItem(socket: Socket, itemPath: string): Promise<void> {
-		await FileService.deleteItem(itemPath)
+		try {
+			await FileService.deleteItem(itemPath)
 
-		const relativeItemDirectory = FileService.getItemDirectory(itemPath)
-		const updatedDirectoryItems = JSON.stringify(await FileService.getItemsInDirectory(relativeItemDirectory))
+			const relativeItemDirectory = FileService.getItemDirectory(itemPath)
+			const updatedDirectoryItems = JSON.stringify(await FileService.getItemsInDirectory(relativeItemDirectory))
 
-		socket.emit('updateDirItems', updatedDirectoryItems)
-		socket.to(relativeItemDirectory).emit('updateDirItems', updatedDirectoryItems)
+			socket.emit('updateDirItems', updatedDirectoryItems)
+			socket.to(relativeItemDirectory).emit('updateDirItems', updatedDirectoryItems)
+		} catch (e) {
+			console.error('[ERROR]'.red.bold, (e as Error).message)
+		}
 	}
 
 	async renameItem(socket: Socket, oldPath: string, newPath: string) {
-		if (oldPath.startsWith('/')) oldPath = oldPath.replace('/', '')
-		if (newPath.startsWith('/')) newPath = newPath.replace('/', '')
+		try {
+			if (oldPath.startsWith('/')) oldPath = oldPath.replace('/', '')
+			if (newPath.startsWith('/')) newPath = newPath.replace('/', '')
 
-		await FileService.renameItem(oldPath, newPath)
+			await FileService.renameItem(oldPath, newPath)
 
-		const oldRelativePath = FileService.getItemDirectory(oldPath)
-		const newRelativePath = FileService.getItemDirectory(newPath)
+			const oldRelativePath = FileService.getItemDirectory(oldPath)
+			const newRelativePath = FileService.getItemDirectory(newPath)
 
-		const itemsInOldDir = JSON.stringify(await FileService.getItemsInDirectory(oldRelativePath))
-		const itemsInNewDir = JSON.stringify(await FileService.getItemsInDirectory(newRelativePath))
+			const itemsInOldDir = JSON.stringify(await FileService.getItemsInDirectory(oldRelativePath))
+			const itemsInNewDir = JSON.stringify(await FileService.getItemsInDirectory(newRelativePath))
 
-		socket.emit('updateDirItems', itemsInOldDir)
-		socket.to(oldRelativePath).emit('updateDirItems', itemsInOldDir)
-		socket.to(newRelativePath).emit('updateDirItems', itemsInNewDir)
+			socket.emit('updateDirItems', itemsInOldDir)
+			socket.to(oldRelativePath).emit('updateDirItems', itemsInOldDir)
+			socket.to(newRelativePath).emit('updateDirItems', itemsInNewDir)
+		} catch (e) {
+			console.error('[ERROR]'.red.bold, (e as Error).message)
+		}
 	}
 
 	async updateItems(socket: Socket, directory: string) {
-		const absoluteItemPath = FileService.getAbsolutePathToItem(directory)
+		try {
+			const absoluteItemPath = FileService.getAbsolutePathToItem(directory)
 
-		const updatedDirectoryItems = await FileService.getItemsInDirectory(absoluteItemPath)
+			const updatedDirectoryItems = await FileService.getItemsInDirectory(absoluteItemPath)
 
-		socket.emit('updateDirItems', JSON.stringify(updatedDirectoryItems))
-		socket.to(directory).emit('updateDirItems', JSON.stringify(updatedDirectoryItems))
+			socket.emit('updateDirItems', JSON.stringify(updatedDirectoryItems))
+			socket.to(directory).emit('updateDirItems', JSON.stringify(updatedDirectoryItems))
+		} catch (e) {
+			console.error('[ERROR]'.red.bold, (e as Error).message)
+		}
 	}
 
 	error(socket: Socket, error: Error): void {
