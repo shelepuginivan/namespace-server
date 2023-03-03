@@ -16,7 +16,7 @@ class FileService implements IFileService {
 	}
 
 	getItemDirectory(itemPath: string): string {
-		const itemPathElements = itemPath.split('/')
+		const itemPathElements = path.normalize(itemPath).split(path.sep)
 		itemPathElements.pop()
 		return itemPathElements.join('/') || '.'
 	}
