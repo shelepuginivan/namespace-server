@@ -69,6 +69,10 @@ class FileService implements IFileService {
 
 		await fsPromises.rename(oldAbsoluteItemPath, newAbsoluteItemPath)
 	}
+
+	async createDirectory(directoryPath: string) {
+		await fsPromises.mkdir(directoryPath)
+	}
 }
 
 export default new FileService()
