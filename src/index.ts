@@ -31,6 +31,7 @@ io.on('connection', (socket) => {
 	Listener.connect(socket)
 
 	socket.on('changeDir', newDirectory => Listener.changeDir(socket, newDirectory))
+	socket.on('createDirectory', newDirectory => Listener.createDirectory(socket, newDirectory))
 	socket.on('deleteItem', itemPath => Listener.deleteItem(socket, itemPath))
 	socket.on('disconnect', reason => Listener.disconnect(socket, reason))
 	socket.on('renameItem', (itemToRename, newName) => Listener.renameItem(socket, itemToRename, newName))
