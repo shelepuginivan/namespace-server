@@ -71,7 +71,21 @@ class FileService implements IFileService {
 	}
 
 	async createDirectory(directoryPath: string) {
-		await fsPromises.mkdir(directoryPath)
+		try {
+			await fsPromises.mkdir(directoryPath)
+		} catch (e) {
+			let additionalNumber = 1
+			while (true) {
+				const directoryPathWithAdditionalNumber = `${directoryPath} (${additionalNumber})`
+
+				if (!fs.existsSync(directoryPathWithAdditionalNumber)) {
+					await fsPromises.mkdir(directoryPathWithAdditionalNumber)
+					break
+				}
+
+				additionalNumber++
+			}
+		}
 	}
 }
 
