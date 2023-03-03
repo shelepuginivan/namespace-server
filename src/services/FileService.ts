@@ -35,7 +35,7 @@ class FileService implements IFileService {
 
 
 	async deleteItem(itemPath: string): Promise<void> {
-		if (!fs.existsSync(itemPath)) {
+		if (!fs.existsSync(this.getAbsolutePathToItem(itemPath))) {
 			throw HttpErrorFabric.createBadRequest('file not found')
 		}
 
