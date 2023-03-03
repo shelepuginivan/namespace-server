@@ -37,6 +37,23 @@ class Listener implements IListener {
 		}
 	}
 
+	async createDirectory(socket: Socket, newDirectory: string): Promise<void> {
+		try {
+			const newDirectoryAbsolutePath = FileService.getAbsolutePathToItem(newDirectory)
+			const newDirectoryAbsoluteLocation = FileService.getItemDirectory(newDirectoryAbsolutePath)
+			const room = FileService.getItemDirectory(newDirectory)
+
+			await FileService.createDirectory(newDirectoryAbsolutePath)
+
+			const updatedFiles = JSON.stringify(await FileService.getItemsInDirectory(newDirectoryAbsoluteLocation))
+
+			socket.emit('updateDirItems', updatedFiles)
+			socket.to(room).emit('updateDirItems', updatedFiles)
+		} catch (e) {
+			console.error('[ERROR]'.red.bold, (e as Error).message)
+		}
+	}
+
 	async deleteItem(socket: Socket, itemPath: string): Promise<void> {
 		try {
 			await FileService.deleteItem(itemPath)
