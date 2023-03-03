@@ -18,7 +18,7 @@ class FileService implements IFileService {
 	getItemDirectory(itemPath: string): string {
 		const itemPathElements = path.normalize(itemPath).split(path.sep)
 		itemPathElements.pop()
-		return itemPathElements.join('/') || '.'
+		return itemPathElements.join('/') || '/'
 	}
 
 	async getItemsInDirectory(directory: string): Promise<FileSystemItem[]> {
