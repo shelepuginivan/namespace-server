@@ -22,7 +22,7 @@ class FileService implements IFileService {
 	}
 
 	async getItemsInDirectory(directory: string): Promise<FileSystemItem[]> {
-		if (!path.isAbsolute(directory)) {
+		if (!path.isAbsolute(directory) || directory.startsWith('/')) {
 			directory = this.getAbsolutePathToItem(directory)
 		}
 
