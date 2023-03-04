@@ -8,9 +8,9 @@ import {createServer} from 'http'
 import * as path from 'path'
 import {Server} from 'socket.io'
 
-import Listener from './listeners/Listener'
 import fileRouter from './routers/fileRouter'
 import {httpErrorMiddleware} from './middlewares/httpErrorMiddleware'
+import {listener} from './modules/fileModule'
 
 dotenv.config({path: path.join(__dirname, '..', '.env')})
 
@@ -28,15 +28,15 @@ app.use('/files', fileRouter)
 app.use(httpErrorMiddleware)
 
 io.on('connection', (socket) => {
-	Listener.connect(socket)
+	listener.connect(socket)
 
-	socket.on('changeDir', newDirectory => Listener.changeDir(socket, newDirectory))
-	socket.on('createDirectory', newDirectory => Listener.createDirectory(socket, newDirectory))
-	socket.on('deleteItem', itemPath => Listener.deleteItem(socket, itemPath))
-	socket.on('disconnect', reason => Listener.disconnect(socket, reason))
-	socket.on('renameItem', (itemToRename, newName) => Listener.renameItem(socket, itemToRename, newName))
-	socket.on('updateItems', async directory => Listener.updateItems(socket, directory))
-	socket.on('error', error => Listener.error(socket, error))
+	socket.on('changeDir', newDirectory => listener.changeDir(socket, newDirectory))
+	socket.on('createDirectory', newDirectory => listener.createDirectory(socket, newDirectory))
+	socket.on('deleteItem', itemPath => listener.deleteItem(socket, itemPath))
+	socket.on('disconnect', reason => listener.disconnect(socket, reason))
+	socket.on('renameItem', (itemToRename, newName) => listener.renameItem(socket, itemToRename, newName))
+	socket.on('updateItems', async directory => listener.updateItems(socket, directory))
+	socket.on('error', error => listener.error(socket, error))
 })
 
 try {
