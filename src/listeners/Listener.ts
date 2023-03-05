@@ -4,11 +4,7 @@ import FileSystemItem from '../FileSystemItem'
 import {FileService} from '../services/FileService'
 
 export class Listener implements IListener {
-	private readonly _fileService: FileService
-
-	constructor(fileService: FileService) {
-		this._fileService = fileService
-	}
+	constructor(private readonly _fileService: FileService) {}
 
 	connect(socket: Socket): void {
 		try {
