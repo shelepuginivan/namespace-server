@@ -10,6 +10,7 @@ export class FileController implements IFileController {
 	constructor(fileService: FileService) {
 		this._fileService = fileService
 	}
+
 	downloadFile(req: Request, res: Response, next: NextFunction) {
 		try {
 			const pathToFile: string = req.query.path as string
