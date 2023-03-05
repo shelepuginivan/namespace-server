@@ -5,11 +5,7 @@ import mime from 'mime-types'
 import fileUpload from 'express-fileupload'
 
 export class FileController implements IFileController {
-	private readonly _fileService: FileService
-
-	constructor(fileService: FileService) {
-		this._fileService = fileService
-	}
+	constructor(private readonly _fileService: FileService) {}
 
 	downloadFile(req: Request, res: Response, next: NextFunction) {
 		try {
