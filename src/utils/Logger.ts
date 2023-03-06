@@ -10,8 +10,21 @@ export class Logger implements ILogger {
 		return Logger._instance
 	}
 
-	error(e: Error): void {
-		console.error(`[${new Date().toISOString()}]`.bold, '[ERROR]'.red.bold, e.message)
+	private _timestamp(): string {
+		return new Date().toISOString()
+	}
+
+	connection(message: string) {
+		console.log(`[${this._timestamp()}]`.bold, '[CONNECTED]'.green.bold, message)
+	}
+
+	disconnection(message: string) {
+		console.log(`[${this._timestamp()}]`.bold, '[DISCONNECTED]'.red.bold, message)
+	}
+
+	error(e: Error | string): void {
+		const message = e instanceof Error ? e.message : e
+		console.error(`[${this._timestamp()}]`.bold, '[ERROR]'.red.bold, message)
 	}
 
 	event(eventName: string, message: string): void {
