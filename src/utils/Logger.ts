@@ -28,18 +28,18 @@ export class Logger implements ILogger {
 	}
 
 	event(eventName: string, message: string): void {
-		console.log(`[${new Date().toISOString()}]`.bold, `[${eventName}]`.green.bold, message)
+		console.log(`[${this._timestamp()}]`.bold, `[${eventName}]`.bold, message)
 	}
 
 	fatal(e: Error): void {
-		console.error(`[${new Date().toISOString()}]`.bold, '[FATAL]'.red.bold, e.message)
+		console.error(`[${this._timestamp()}]`.bold, '[FATAL]'.red.bold, e.message)
 	}
 
 	info(message: string): void {
-		console.info(`[${new Date().toISOString()}]`.bold, '[INFO]'.blue.bold, message)
+		console.info(`[${this._timestamp()}]`.bold, '[INFO]'.blue.bold, message)
 	}
 
 	start(port: number): void {
-		console.log(`[${new Date().toISOString()}]`.bold, '[START]'.magenta.bold, `Server started on port ${port}...`)
+		console.log(`[${this._timestamp()}]`.bold, '[START]'.magenta.bold, `Server started on port ${port}...`)
 	}
 }
