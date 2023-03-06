@@ -16,30 +16,31 @@ export class Listener implements IListener {
 			const presetPassword = process.env.DISKSPACE_PASSWORD
 
 			if (presetPassword && password !== presetPassword) {
-				console.error('[CONNECTION ERROR]'.red.bold, `${socket.id} - WRONG PASSWORD`)
+				this._logger.error(`AUTH ${socket.id} - WRONG PASSWORD`)
 				socket.disconnect(true)
 				return
 			}
 
-			console.log('[CONNECTION]'.green.bold, `${socket.id} - ESTABLISHED`)
+			this._logger.connection(`${socket.id} - ESTABLISHED`)
 		} catch (e) {
-			console.error('[ERROR]'.red.bold, (e as Error).message)
+			this._logger.error(e as Error)
 		}
 	}
 
 	disconnect(socket: Socket, reason: DisconnectReason): void {
-		console.error('[DISCONNECTED]'.red.bold, `${socket.id} - ${reason.toUpperCase()}`)
+		this._logger.disconnection(`${socket.id} - ${reason.toUpperCase()}`)
 	}
 
 	async changeDir(socket: Socket, newDirectory: string): Promise<void> {
 		try {
 			socket.rooms.forEach(room => socket.leave(room))
 			socket.join(newDirectory)
+
 			const workingDirItems: FileSystemItem[] = await this._fileService.getItemsInDirectory(this._fileService.getAbsolutePathToItem(newDirectory))
 
 			socket.emit('updateDirItems', JSON.stringify(workingDirItems))
 		} catch (e) {
-			console.error('[ERROR]'.red.bold, (e as Error).message)
+			this._logger.error(e as Error)
 		}
 	}
 
@@ -56,7 +57,7 @@ export class Listener implements IListener {
 			socket.emit('updateDirItems', updatedFiles)
 			socket.to(room).emit('updateDirItems', updatedFiles)
 		} catch (e) {
-			console.error('[ERROR]'.red.bold, (e as Error).message)
+			this._logger.error(e as Error)
 		}
 	}
 
@@ -70,7 +71,7 @@ export class Listener implements IListener {
 			socket.emit('updateDirItems', updatedDirectoryItems)
 			socket.to(relativeItemDirectory).emit('updateDirItems', updatedDirectoryItems)
 		} catch (e) {
-			console.error('[ERROR]'.red.bold, (e as Error).message)
+			this._logger.error(e as Error)
 		}
 	}
 
@@ -91,7 +92,7 @@ export class Listener implements IListener {
 			socket.to(oldRelativePath).emit('updateDirItems', itemsInOldDir)
 			socket.to(newRelativePath).emit('updateDirItems', itemsInNewDir)
 		} catch (e) {
-			console.error('[ERROR]'.red.bold, (e as Error).message)
+			this._logger.error(e as Error)
 		}
 	}
 
@@ -104,11 +105,11 @@ export class Listener implements IListener {
 			socket.emit('updateDirItems', JSON.stringify(updatedDirectoryItems))
 			socket.to(directory).emit('updateDirItems', JSON.stringify(updatedDirectoryItems))
 		} catch (e) {
-			console.error('[ERROR]'.red.bold, (e as Error).message)
+			this._logger.error(e as Error)
 		}
 	}
 
 	error(socket: Socket, error: Error): void {
-		console.error('[ERROR]'.red.bold, `${socket.id} - ${error.message}`)
+		this._logger.error(`${socket.id} - ${error.message}`)
 	}
 }
