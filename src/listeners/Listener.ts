@@ -2,9 +2,13 @@ import {IListener} from '../utils/interfaces/IListener'
 import {DisconnectReason, Socket} from 'socket.io'
 import FileSystemItem from '../FileSystemItem'
 import {FileService} from '../services/FileService'
+import {Logger} from '../utils/Logger'
 
 export class Listener implements IListener {
-	constructor(private readonly _fileService: FileService) {}
+	constructor(
+		private readonly _fileService: FileService,
+		private readonly _logger: Logger
+	) {}
 
 	connect(socket: Socket): void {
 		try {
