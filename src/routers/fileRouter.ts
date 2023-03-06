@@ -1,7 +1,9 @@
 import {NextFunction, Request, Response, Router} from 'express'
-import {fileController} from '../modules/fileModule'
+import {FileController} from '../controllers/FileController'
+import {fileService} from '../modules/fileModule'
 
 const fileRouter: Router = Router()
+const fileController: FileController = new FileController(fileService)
 
 fileRouter.get('/preview',
 	(req: Request, res: Response, next: NextFunction) => fileController.previewFile(req, res, next))
