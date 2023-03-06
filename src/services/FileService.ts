@@ -1,10 +1,11 @@
-import {IFileService} from '../utils/interfaces/IFileService'
-import * as path from 'path'
+import fileUpload from 'express-fileupload'
 import * as fs from 'fs'
 import fsPromises from 'fs/promises'
-import fileUpload from 'express-fileupload'
-import FileSystemItem from '../FileSystemItem'
+import * as path from 'path'
+
 import HttpErrorFabric from '../exceptions/HttpErrorFabric'
+import FileSystemItem from '../FileSystemItem'
+import {IFileService} from '../utils/interfaces/IFileService'
 
 export class FileService implements IFileService {
 	getAbsolutePathToItem(itemPath?: string): string {

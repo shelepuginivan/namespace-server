@@ -6,11 +6,11 @@ import {createServer} from 'http'
 import * as path from 'path'
 import {Server} from 'socket.io'
 
-import fileRouter from './routers/fileRouter'
+import {Listener} from './listeners/Listener'
 import {httpErrorMiddleware} from './middlewares/httpErrorMiddleware'
 import {fileService} from './modules/fileModule'
+import fileRouter from './routers/fileRouter'
 import {Logger} from './utils/Logger'
-import {Listener} from './listeners/Listener'
 
 dotenv.config({path: path.join(__dirname, '..', '.env')})
 
