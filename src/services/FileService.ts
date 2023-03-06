@@ -75,16 +75,13 @@ export class FileService implements IFileService {
 			await fsPromises.mkdir(directoryPath)
 		} catch (e) {
 			let additionalNumber = 1
-			while (true) {
-				const directoryPathWithAdditionalNumber = `${directoryPath} (${additionalNumber})`
+			let pathWithAdditionalNumber = `${directoryPath} (${additionalNumber})`
 
-				if (!fs.existsSync(directoryPathWithAdditionalNumber)) {
-					await fsPromises.mkdir(directoryPathWithAdditionalNumber)
-					break
-				}
-
-				additionalNumber++
+			while (fs.existsSync(pathWithAdditionalNumber)) {
+				pathWithAdditionalNumber = `${directoryPath} (${++additionalNumber})`
 			}
+
+			await fsPromises.mkdir(pathWithAdditionalNumber)
 		}
 	}
 }
