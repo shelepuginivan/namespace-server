@@ -1,5 +1,3 @@
-import 'colors'
-
 import cors from 'cors'
 import dotenv from 'dotenv'
 import express from 'express'
@@ -22,6 +20,8 @@ const io = new Server(httpServer, {
 	cors: {origin}
 })
 
+const logger = new Logger()
+
 app.use('/files', cors({origin}))
 app.use(fileUpload())
 app.use('/files', fileRouter)
@@ -40,10 +40,11 @@ io.on('connection', (socket) => {
 })
 
 try {
-	const PORT = process.env.PORT || 5124
+	const PORT = parseInt(process.env.PORT as string) || 5124
 	httpServer.listen(PORT)
-	console.log('[INFO]'.blue.bold, `CORS: Allowed origins: ${origin.join(', ')}`)
-	console.log('\n[START]'.magenta.bold, `Server started on port ${PORT}...\n`)
+
+	logger.info(`CORS: Allowed origins: ${origin.join(', ')}`)
+	logger.start(PORT)
 } catch (e) {
-	console.error('[STARTUP ERROR]'.red.bold, (e as Error).message)
+	logger.fatal(e as Error)
 }
