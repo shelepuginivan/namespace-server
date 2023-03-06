@@ -23,7 +23,7 @@ const io = new Server(httpServer, {
 })
 
 const logger = new Logger()
-const listener: Listener = new Listener(fileService)
+const listener: Listener = new Listener(fileService, logger)
 
 app.use('/files', cors({origin}))
 app.use(fileUpload())
