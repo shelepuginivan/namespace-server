@@ -1,9 +1,8 @@
+import config from 'config'
 import cors from 'cors'
-import dotenv from 'dotenv'
 import express from 'express'
 import fileUpload from 'express-fileupload'
 import {createServer} from 'http'
-import * as path from 'path'
 import {Server} from 'socket.io'
 
 import {Listener} from './listeners/Listener'
@@ -12,9 +11,7 @@ import {fileService} from './modules/fileModule'
 import fileRouter from './routers/fileRouter'
 import {Logger} from './utils/Logger'
 
-dotenv.config({path: path.join(__dirname, '..', '.env')})
-
-const origin: string[] = (process.env.CLIENTS || 'localhost').split(',')
+const origin: string[] = config.get('allowedClients')
 
 const app = express()
 const httpServer = createServer(app)
@@ -43,7 +40,7 @@ io.on('connection', (socket) => {
 })
 
 try {
-	const PORT = parseInt(process.env.PORT as string) || 5124
+	const PORT: number = config.get('port') || 5124
 	httpServer.listen(PORT)
 
 	logger.info(`CORS: Allowed origins: ${origin.join(', ')}`)
