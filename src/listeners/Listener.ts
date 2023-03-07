@@ -4,6 +4,7 @@ import FileSystemItem from '../FileSystemItem'
 import {FileService} from '../services/FileService'
 import {IListener} from '../utils/interfaces/IListener'
 import {Logger} from '../utils/Logger'
+import config from 'config'
 
 export class Listener implements IListener {
 	constructor(
@@ -14,7 +15,7 @@ export class Listener implements IListener {
 	connect(socket: Socket): void {
 		try {
 			const password = socket.handshake.auth?.password
-			const presetPassword = process.env.DISKSPACE_PASSWORD
+			const presetPassword = config.get('cloudPassword')
 
 			if (presetPassword && password !== presetPassword) {
 				this._logger.error(`AUTH ${socket.id} - WRONG PASSWORD`)
