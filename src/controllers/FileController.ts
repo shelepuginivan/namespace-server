@@ -12,6 +12,9 @@ export class FileController implements IFileController {
 		try {
 			const pathToFile: string = req.query.path as string
 			const absolutePath = this._fileService.getAbsolutePathToItem(pathToFile)
+
+			this._fileService.validatePath(absolutePath)
+
 			res.download(absolutePath)
 		} catch (e) {
 			next(e)
@@ -22,6 +25,9 @@ export class FileController implements IFileController {
 		try {
 			const pathToFile: string = req.query.path as string
 			const absolutePath = this._fileService.getAbsolutePathToItem(pathToFile)
+
+			this._fileService.validatePath(absolutePath)
+
 			res.setHeader('Content-Type', `${mime.lookup(absolutePath) || 'text/plain'}; charset=utf-8`)
 			res.status(200).sendFile(absolutePath)
 		} catch (e) {
