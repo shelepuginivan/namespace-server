@@ -1,3 +1,4 @@
+import config from 'config'
 import fileUpload from 'express-fileupload'
 import * as fs from 'fs'
 import fsPromises from 'fs/promises'
@@ -8,12 +9,14 @@ import FileSystemItem from '../FileSystemItem'
 import {IFileService} from '../utils/interfaces/IFileService'
 
 export class FileService implements IFileService {
+	private readonly _root: string = config.get('cloudDirectory')
+
 	getAbsolutePathToItem(itemPath?: string): string {
 		if (!itemPath) throw HttpErrorFabric.createBadRequest('parameter `path` required')
 		if (!itemPath.startsWith('/') && path.isAbsolute(itemPath)) return itemPath
 		if (itemPath.startsWith('/')) itemPath = itemPath.replace('/', '')
 
-		return path.join(process.env.DISKSPACE_DIRECTORY as string, itemPath)
+		return path.join(this._root, itemPath)
 	}
 
 	getItemDirectory(itemPath: string): string {
@@ -89,7 +92,7 @@ export class FileService implements IFileService {
 	validatePath(itemPath: string): void {
 		if (!path.isAbsolute(itemPath)) itemPath = this.getAbsolutePathToItem(itemPath)
 
-		if (!itemPath.includes(process.env.DISKSPACE_DIRECTORY as string)) {
+		if (!itemPath.includes(this._root)) {
 			throw HttpErrorFabric.createForbidden(`forbidden to access ${itemPath}`)
 		}
 
