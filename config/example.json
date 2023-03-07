@@ -1,0 +1,6 @@
+{
+	"port": 0,
+	"cloudDirectory": "...",
+	"cloudPassword": "...",
+	"allowedClients": []
+}
