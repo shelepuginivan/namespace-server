@@ -85,4 +85,16 @@ export class FileService implements IFileService {
 			await fsPromises.mkdir(pathWithAdditionalNumber)
 		}
 	}
+
+	validatePath(itemPath: string): void {
+		if (!path.isAbsolute(itemPath)) itemPath = this.getAbsolutePathToItem(itemPath)
+
+		if (!itemPath.includes(process.env.DISKSPACE_DIRECTORY as string)) {
+			throw HttpErrorFabric.createForbidden(`forbidden to access ${itemPath}`)
+		}
+
+		if (!fs.existsSync(itemPath)) {
+			throw HttpErrorFabric.createBadRequest(`path ${itemPath} does not exists`)
+		}
+	}
 }
