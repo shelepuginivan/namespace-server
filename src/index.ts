@@ -7,6 +7,7 @@ import {Server} from 'socket.io'
 
 import {Listener} from './listeners/Listener'
 import {httpErrorMiddleware} from './middlewares/httpErrorMiddleware'
+import {loggingMiddleware} from './middlewares/loggingMiddleware'
 import {fileService} from './modules/fileModule'
 import fileRouter from './routers/fileRouter'
 import {Logger} from './utils/Logger'
@@ -22,6 +23,7 @@ const io = new Server(httpServer, {
 const logger = new Logger()
 const listener: Listener = new Listener(fileService, logger)
 
+app.use(loggingMiddleware)
 app.use('/files', cors({origin}))
 app.use(fileUpload())
 app.use('/files', fileRouter)
