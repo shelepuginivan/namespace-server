@@ -1,5 +1,7 @@
 import 'colors'
 
+import {Request} from 'express'
+
 import {ILogger} from './interfaces/ILogger'
 
 export class Logger implements ILogger {
@@ -37,6 +39,10 @@ export class Logger implements ILogger {
 
 	info(message: string): void {
 		console.info(`[${this._timestamp()}]`.bold, '[INFO]'.blue.bold, message)
+	}
+
+	request(req: Request): void {
+		console.log(`[${this._timestamp()}]`.bold, '[HTTP]'.yellow.bold, req.method, req.url)
 	}
 
 	start(port: number): void {
