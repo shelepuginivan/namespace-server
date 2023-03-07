@@ -7,4 +7,5 @@ export interface IFileService {
 	createDirectory(newDirectory: string): Promise<void>
 	uploadFiles(files: fileUpload.FileArray): Promise<void>
 	renameItem(itemToRename: string, newName: string): Promise<void>
+	validatePath(itemPath: string): void
 }
