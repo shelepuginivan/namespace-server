@@ -40,6 +40,6 @@ export class Logger implements ILogger {
 	}
 
 	start(port: number): void {
-		console.log(`[${this._timestamp()}]`.bold, '[START]'.magenta.bold, `Server started on port ${port}...`)
+		console.info(`[${this._timestamp()}]`.bold, '[START]'.magenta.bold, `Server started on port ${port}...`)
 	}
 }
