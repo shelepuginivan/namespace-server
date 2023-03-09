@@ -1,10 +1,10 @@
+import config from 'config'
 import {DisconnectReason, Socket} from 'socket.io'
 
 import FileSystemItem from '../FileSystemItem'
 import {FileService} from '../services/FileService'
 import {IListener} from '../utils/interfaces/IListener'
 import {Logger} from '../utils/Logger'
-import config from 'config'
 
 export class Listener implements IListener {
 	constructor(
