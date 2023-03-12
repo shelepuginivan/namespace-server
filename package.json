@@ -1,8 +1,8 @@
 {
 	"scripts": {
-		"build": "tsc",
-		"start": "node src/index.js",
-		"dev": "nodemon"
+		"build": "tsc --outDir ./dist",
+		"start:dev": "nodemon",
+		"start:prod": "node ./dist/index.js"
 	},
 	"dependencies": {
 		"colors": "^1.4.0",
