@@ -1,6 +1,6 @@
 {
 	"ignore": [],
 	"watch": ["."],
-	"exec": "npm run build && npm start",
+	"exec": "tsc && node src/index.js",
 	"ext": "ts"
 }
