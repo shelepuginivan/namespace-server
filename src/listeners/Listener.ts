@@ -27,14 +27,16 @@ export class Listener implements IListener {
 			const presetPassword = config.get('cloudPassword')
 
 			if (presetPassword && password !== presetPassword) {
-				this._logger.error(`AUTH ${socket.id} - WRONG PASSWORD`)
+				const occurredAuthError = SocketErrorFactory.authError(`AUTH ${socket.id} - WRONG PASSWORD`)
+				this._handleError(occurredAuthError, socket)
+
 				socket.disconnect(true)
 				return
 			}
 
 			this._logger.connection(`${socket.id} - ESTABLISHED`)
 		} catch (e) {
-			this._logger.error(e as Error)
+			if (e instanceof Error) this._handleError(e, socket)
 		}
 	}
 
@@ -51,7 +53,7 @@ export class Listener implements IListener {
 
 			socket.emit('updateDirItems', JSON.stringify(workingDirItems))
 		} catch (e) {
-			this._logger.error(e as Error)
+			if (e instanceof Error) this._handleError(e, socket)
 		}
 	}
 
@@ -68,7 +70,7 @@ export class Listener implements IListener {
 			socket.emit('updateDirItems', updatedFiles)
 			socket.to(room).emit('updateDirItems', updatedFiles)
 		} catch (e) {
-			this._logger.error(e as Error)
+			if (e instanceof Error) this._handleError(e, socket)
 		}
 	}
 
@@ -82,7 +84,7 @@ export class Listener implements IListener {
 			socket.emit('updateDirItems', updatedDirectoryItems)
 			socket.to(relativeItemDirectory).emit('updateDirItems', updatedDirectoryItems)
 		} catch (e) {
-			this._logger.error(e as Error)
+			if (e instanceof Error) this._handleError(e, socket)
 		}
 	}
 
@@ -103,7 +105,7 @@ export class Listener implements IListener {
 			socket.to(oldRelativePath).emit('updateDirItems', itemsInOldDir)
 			socket.to(newRelativePath).emit('updateDirItems', itemsInNewDir)
 		} catch (e) {
-			this._logger.error(e as Error)
+			if (e instanceof Error) this._handleError(e, socket)
 		}
 	}
 
@@ -116,11 +118,12 @@ export class Listener implements IListener {
 			socket.emit('updateDirItems', JSON.stringify(updatedDirectoryItems))
 			socket.to(directory).emit('updateDirItems', JSON.stringify(updatedDirectoryItems))
 		} catch (e) {
-			this._logger.error(e as Error)
+			if (e instanceof Error) this._handleError(e, socket)
 		}
 	}
 
 	error(socket: Socket, error: Error): void {
-		this._logger.error(`${socket.id} - ${error.message}`)
+		error.message = `${socket.id} - ${error.message}`
+		this._handleError(error, socket)
 	}
 }
