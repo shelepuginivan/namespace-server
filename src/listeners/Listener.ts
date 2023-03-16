@@ -5,12 +5,21 @@ import FileSystemItem from '../FileSystemItem'
 import {FileService} from '../services/FileService'
 import {IListener} from '../utils/interfaces/IListener'
 import {Logger} from '../utils/Logger'
+import {SocketErrorFactory} from '../exceptions/SocketErrorFactory'
+import {SocketError} from '../exceptions/SocketError'
 
 export class Listener implements IListener {
 	constructor(
 		private readonly _fileService: FileService,
 		private readonly _logger: Logger
 	) {}
+
+	private readonly _handleError = (e: Error, socket: Socket) => {
+		this._logger.error(e)
+		if (!(e instanceof SocketError)) e = SocketErrorFactory.unexpectedError(e.message)
+
+		socket.emit('error', JSON.stringify(e))
+	}
 
 	connect(socket: Socket): void {
 		try {
