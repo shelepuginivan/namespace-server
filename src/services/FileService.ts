@@ -13,7 +13,7 @@ export class FileService implements IFileService {
 
 	getAbsolutePathToItem(itemPath?: string): string {
 		if (!itemPath) throw HttpErrorFabric.createBadRequest('parameter `path` required')
-		if (!itemPath.startsWith('/') && path.isAbsolute(itemPath)) return itemPath
+		if (itemPath.startsWith(this._root)) return itemPath
 		if (itemPath.startsWith('/')) itemPath = itemPath.replace('/', '')
 
 		return path.join(this._root, itemPath)
@@ -37,13 +37,12 @@ export class FileService implements IFileService {
 		})
 	}
 
-
 	async deleteItem(itemPath: string): Promise<void> {
 		if (!fs.existsSync(this.getAbsolutePathToItem(itemPath))) {
 			throw HttpErrorFabric.createBadRequest('file not found')
 		}
 
-		if (!path.isAbsolute(itemPath)) {
+		if (!itemPath.startsWith(this._root)) {
 			itemPath = this.getAbsolutePathToItem(itemPath)
 		}
 
@@ -92,7 +91,7 @@ export class FileService implements IFileService {
 	validatePath(itemPath: string): void {
 		if (!path.isAbsolute(itemPath)) itemPath = this.getAbsolutePathToItem(itemPath)
 
-		if (!itemPath.includes(this._root)) {
+		if (!itemPath.startsWith(this._root)) {
 			throw HttpErrorFabric.createForbidden(`forbidden to access ${itemPath}`)
 		}
 
