@@ -12,7 +12,8 @@
 		"express-fileupload": "^1.4.0",
 		"mime-types": "^2.1.35",
 		"socket.io": "^4.6.0",
-		"tsc": "^2.0.4"
+		"tsc": "^2.0.4",
+		"typescript": "^5.2.2"
 	},
 	"devDependencies": {
 		"@types/config": "^3.3.0",
